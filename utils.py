@@ -1,6 +1,8 @@
 import pandas as pd
 import seaborn as sn
 import matplotlib.pyplot as plt
+import textwrap
+
 
 def plot_cm(cm):
     classes = ['negative', 'positive']
@@ -9,4 +11,7 @@ def plot_cm(cm):
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Target")
     plt.show()
+
+def wrap(x):
+    return textwrap.fill(x, replace_whitespace=False, fix_sentence_endings=True)
 
