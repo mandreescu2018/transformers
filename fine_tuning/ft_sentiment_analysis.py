@@ -73,7 +73,8 @@ print(res)
 # trainer.save_model('may_saved_model')
 
 # newmodel = pipeline('text-classification', model='fine_tuning/may_saved_model')
-newmodel = pipeline('text-classification', model='D:\\work\\PythonProjects\\transformers_learn\\transformers\\fine_tuning\\may_saved_model')
+newmodel = pipeline('text-classification',
+                    model='D:\\work\\PythonProjects\\transformers_learn\\transformers\\fine_tuning\\may_saved_model')
 
 print("\n========= evaluate with pipeline =====")
 print("This movie is great")
