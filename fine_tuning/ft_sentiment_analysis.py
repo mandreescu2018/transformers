@@ -5,6 +5,7 @@ from transformers import AutoTokenizer, TrainingArguments, AutoModelForSequenceC
 from torchinfo import summary
 import json
 
+
 def tokenize_fn(batch):
     return tokenizer(batch['sentence'], truncation=True)
 
@@ -34,6 +35,7 @@ print("\n========= tokenized_sentences =====")
 tokenized_sentences = tokenizer(raw_datasets['train'][0:3]['sentence'])
 pprint(tokenized_sentences)
 
+print("\n========= tokenized dataset =====")
 tokenized_dataset = raw_datasets.map(tokenize_fn, batched=True)
 print(tokenized_dataset)
 training_args = TrainingArguments(
@@ -59,18 +61,18 @@ metric = load_metric("glue", "sst2")
 res = metric.compute(predictions=[1, 0, 1], references=[1, 0, 0])
 print(res)
 
-# trainer = Trainer(
-#     model,
-#     training_args,
-#     train_dataset=tokenized_dataset['train'],
-#     eval_dataset=tokenized_dataset['validation'],
-#     tokenizer=tokenizer,
-#     compute_metrics=compute_metrics
-# )
-#
-# trainer.train()
+trainer = Trainer(
+    model,
+    training_args,
+    train_dataset=tokenized_dataset['train'],
+    eval_dataset=tokenized_dataset['validation'],
+    tokenizer=tokenizer,
+    compute_metrics=compute_metrics
+)
 
-# trainer.save_model('may_saved_model')
+trainer.train()
+
+trainer.save_model('may_saved_model')
 
 # newmodel = pipeline('text-classification', model='fine_tuning/may_saved_model')
 newmodel = pipeline('text-classification',
@@ -83,3 +85,11 @@ print(res)
 print("This movie sucks")
 res = newmodel('This movie sucks')
 print(res)
+
+params_after =[]
+for nam, p in model.named_parameters():
+    params_after.append(p.detach().cpu().numpy())
+
+print("\n========= check params =====")
+for p1, p2 in zip(params_before, params_after):
+    print(np.sum(np.abs(p1 - p2)))
